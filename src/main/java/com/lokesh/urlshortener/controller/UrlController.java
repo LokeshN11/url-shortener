@@ -13,11 +13,15 @@ public class UrlController {
     private UrlService urlService;
 
     @GetMapping("/shorten")
-    public String shortenUrl(@RequestParam String originalUrl) {
+    public String shortenUrl(
+            @RequestParam String originalUrl,
+            @RequestParam(required = false) String customAlias) {
 
-        UrlMapping urlMapping = urlService.saveUrl(originalUrl);
+        UrlMapping urlMapping =
+                urlService.saveUrl(originalUrl, customAlias);
 
-        return "Short URL: http://localhost:8080/" + urlMapping.getShortCode();
+        return "Short URL: http://localhost:8080/"
+                + urlMapping.getShortCode();
     }
 
     @GetMapping("/{shortCode}")
@@ -31,5 +35,4 @@ public class UrlController {
 
         return new RedirectView(urlMapping.getOriginalUrl());
     }
-
 }

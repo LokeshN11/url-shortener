@@ -34,17 +34,42 @@ public class UrlService {
         return shortCode.toString();
     }
 
-    public UrlMapping saveUrl(String originalUrl) {
+    public UrlMapping saveUrl(String originalUrl, String customAlias) {
 
-        String shortCode = generateShortCode();
+        String shortCode;
 
-        UrlMapping urlMapping = new UrlMapping(originalUrl, shortCode);
+        if (customAlias != null && !customAlias.isEmpty()) {
+
+            if (urlRepository.existsByShortCode(customAlias)) {
+                throw new RuntimeException("Custom alias already exists!");
+            }
+
+            shortCode = customAlias;
+
+        } else {
+            shortCode = generateShortCode();
+        }
+
+        UrlMapping urlMapping =
+                new UrlMapping(originalUrl, shortCode);
 
         return urlRepository.save(urlMapping);
     }
 
     public UrlMapping getOriginalUrl(String shortCode) {
 
-        return urlRepository.findByShortCode(shortCode).orElse(null);
+        UrlMapping urlMapping =
+                urlRepository.findByShortCode(shortCode).orElse(null);
+
+        if (urlMapping != null) {
+
+            urlMapping.setClickCount(
+                    urlMapping.getClickCount() + 1
+            );
+
+            urlRepository.save(urlMapping);
+        }
+
+        return urlMapping;
     }
 }

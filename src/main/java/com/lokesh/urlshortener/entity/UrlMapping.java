@@ -15,6 +15,7 @@ public class UrlMapping {
 
     @Column(nullable = false, unique = true)
     private String shortCode;
+    private int clickCount = 0;
 
     public UrlMapping() {
     }
@@ -43,4 +44,11 @@ public class UrlMapping {
     public void setShortCode(String shortCode) {
         this.shortCode = shortCode;
     }
+    public int getClickCount() {
+    return clickCount;
+}
+
+public void setClickCount(int clickCount) {
+    this.clickCount = clickCount;
+}
 }
